@@ -1,13 +1,19 @@
 from django.shortcuts import render
-from .logics import translate_text, detect_text
-from django.views import View
+from .logics import translate_text, detect_text, text_docx
 from rest_framework import status
-from rest_framework.decorators import api_view
-from .serializers import TranslateSerializer
+from .serializers import TranslateSerializer, DocumentSerializer, StarsSerializer
 from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
-from django.http import HttpResponse, JsonResponse
+from .models import Stars
+
+
+
+def index(request):
+    data = {
+        'stars': Stars.objects.all()
+    }
+
+    return Response(data, status=status.HTTP_200_OK)
 
 
 class TranslateView(APIView):
@@ -39,9 +45,71 @@ class TranslateView(APIView):
                     message = "Error: 'target_language' is not True"
                     return Response(message, status=status.HTTP_400_BAD_REQUEST)
             else:
-                    message = "Error: 'Language' is not True"
-                    return Response(message, status=status.HTTP_400_BAD_REQUEST)
+                message = "Error: 'Language' is not True"
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(" Xatolik ", status=status.HTTP_400_BAD_REQUEST)
     
 
+class DocumentView(APIView):
+    def post(self, request):
+        serializer = TranslateSerializer(data=request.data)
+        if serializer.is_valid():
+            text = serializer.validated_data['text']
+            target_language = serializer.validated_data['target_language']
+            language_old = detect_text(text)
+
+            if language_old == target_language:
+                
+                docs = text_docx(text=text)
+                
+                answer = {
+                    'old_text': text,
+                    'language': target_language,
+                    "docs": docs,
+                    'translated_text': text
+                    }
+                return Response(answer, status=status.HTTP_200_OK)
+
+            if language_old == 'kk' or language_old == 'ky' or language_old == 'uz':
+
+                if target_language == 'kk' or target_language == 'ky' or target_language == 'uz':
+                    
+                    translated_text =  translate_text(text=text, target_language=target_language)
+                    docs = text_docx(text=translated_text)
+
+                    answer = {
+                        'old_text': text,
+                        'language': target_language,
+                        'docs': docs,
+                        'translated_text': translated_text
+                    }
+                    return Response(answer, status=status.HTTP_200_OK)
+                else:
+                    message = "Error: 'target_language' is not True"
+                    return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                message = "Error: 'Language' is not True"
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(" Xatolik ", status=status.HTTP_400_BAD_REQUEST)
+
+
+class StarsApiView(APIView):
+    def post(self, request):
+        serializer = StarsSerializer(data=request.data)
+
+        if serializer.is_valid():
+            stars = serializer.validated_data['stars']
+            comment = serializer.validated_data['comment']
+
+            if stars > 5 or stars < 1:
+                message = "Error: 'Stars' is not True"
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Stars.objects.create(stars=stars, comment=comment)
+                answer = {
+                    'Stars': stars,
+                    'comment': comment
+                }
+                return Response(answer, status=status.HTTP_200_OK)

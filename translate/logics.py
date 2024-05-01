@@ -1,5 +1,11 @@
 from googletrans import Translator
 from docx import Document
+import os
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 def detect_text(text: str):
@@ -16,9 +22,15 @@ def translate_text(text, target_language):
 def text_docx(text):
     document = Document()
     document.add_paragraph(text)
-    document.save('file.docx')
-    return document
+    main_path = 'media/file.docx'
+    document.save(main_path)
+    path = os.path.join(BASE_DIR / main_path)
+    return  path
 
-doc = text_docx("Salom")
-print(doc)
+
+
+
+
+
+
 

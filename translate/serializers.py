@@ -22,3 +22,11 @@ class TranslateSerializer(serializers.Serializer):
                 },
             },
         }
+
+class DocumentSerializer(serializers.Serializer):
+    target_language = serializers.CharField(required=True, max_length=10)
+    text = serializers.CharField(required=True, max_length=500)
+
+class StarsSerializer(serializers.Serializer):
+    stars = serializers.IntegerField(min_value=1, max_value=5, required=True)
+    comment = serializers.CharField(max_length=200, required=False)
