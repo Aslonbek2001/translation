@@ -26,6 +26,11 @@ class TranslateSerializer(serializers.Serializer):
 class DocumentSerializer(serializers.Serializer):
     target_language = serializers.CharField(required=True, max_length=10)
     text = serializers.CharField(required=True, max_length=500)
+    class Meta:
+        extra_kwargs = {
+            'target_language': {'required': True},
+            'text': {'required': False}
+        }
 
 class StarsSerializer(serializers.Serializer):
     stars = serializers.IntegerField(min_value=1, max_value=5, required=True)

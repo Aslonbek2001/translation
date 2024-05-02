@@ -15,5 +15,11 @@ class Stars(models.Model):
     def __str__(self):
         return f"{self.full_name}  {self.stars} - yulduzcha qo'ydi"
 
+# class Quetions(models.Model):
+#     quetions = models.CharField(max_length=30)
+#     answer = models.TextField(help_text="Javob")
+
+#     def __str__(self):
+#         return f"{self.quetions} - {self.answer}"
 
 

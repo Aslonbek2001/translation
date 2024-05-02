@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from .logics import translate_text, detect_text, text_docx
 from rest_framework import status
@@ -8,12 +9,52 @@ from .models import Stars
 
 
 
-def index(request):
-    data = {
-        'stars': Stars.objects.all()
-    }
+class IndexView(APIView):
+    def get(self, request):
+        count = Stars.objects.all().count()
+            
+        stars = Stars.objects.all()
+        surat = 0
+        for item in stars:
+            surat += item.stars
+        
+        if count == 0:
+            data = {
+                'stars': surat/1,
+                'srars_count': count,
+            }
+        else:
+            data = {
+                'stars': surat/count,
+                'srars_count': count,
+            }
 
-    return Response(data, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
+   
+
+
+def index(request):
+    
+    if request.method == 'GET':
+        count = Stars.objects.all().count()
+            
+        stars = Stars.objects.all()
+        surat = 0
+        for item in stars:
+            surat += item.stars
+        
+        if count == 0:
+            data = {
+                'stars': surat/1,
+                'srars_count': count,
+            }
+        else:
+            data = {
+                'stars': surat/count,
+                'srars_count': count,
+            }
+
+        return JsonResponse(data, status=status.HTTP_200_OK)
 
 
 class TranslateView(APIView):
@@ -109,7 +150,7 @@ class StarsApiView(APIView):
             else:
                 Stars.objects.create(stars=stars, comment=comment)
                 answer = {
-                    'Stars': stars,
+                    'stars': stars,
                     'comment': comment
                 }
                 return Response(answer, status=status.HTTP_200_OK)

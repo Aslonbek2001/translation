@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import TranslateView, DocumentView
+from .views import TranslateView, DocumentView, IndexView
 
 urlpatterns = [
-    path("", TranslateView.as_view(), name="translate"),
+    path("", IndexView.as_view(), name="index"),
+    path("tarjima/", TranslateView.as_view(), name="translate"),
     path("docs/", DocumentView.as_view(), name="document"),
+
 ]
