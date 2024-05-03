@@ -24,36 +24,25 @@ class IndexView(APIView):
             }
         else:
             data = {
-                'stars': surat/count,
+                'level': surat/count,
                 'srars_count': count,
             }
 
         return Response(data, status=status.HTTP_200_OK)
-   
-
-
-def index(request):
     
-    if request.method == 'GET':
-        count = Stars.objects.all().count()
-            
-        stars = Stars.objects.all()
-        surat = 0
-        for item in stars:
-            surat += item.stars
-        
-        if count == 0:
-            data = {
-                'stars': surat/1,
-                'srars_count': count,
+    
+    def post(self, request):
+        serializer = FAQ_Serializer(data=request.data)
+        if serializer.is_valid():
+            full_name = serializer.validated_data['full_name']
+            question = serializer.validated_data['question']
+            obj = FAQ.objects.create(full_name=full_name, question=question)
+            obj.save()
+            answer = {
+                'full_name': full_name,
+                'question': question,
             }
-        else:
-            data = {
-                'stars': surat/count,
-                'srars_count': count,
-            }
-
-        return JsonResponse(data, status=status.HTTP_200_OK)
+            return Response(answer, status=status.HTTP_200_OK)
 
 
 class TranslateView(APIView):
@@ -183,3 +172,31 @@ class FAQApiView(APIView):
             return Response(answer, status=status.HTTP_200_OK)
 
 
+class StarsApiView(APIView):
+    def get(self, request):
+        faqs = Stars.objects.all()
+        data = []
+        for item in faqs:
+            data.append({
+                'id': item.id,
+                'from_user': item.full_name,
+                'star': item.stars,
+                'comment': item.comment,
+            })
+        return Response(data, status=status.HTTP_200_OK)
+    
+    
+    def post(self, request):
+        serializer = StarsSerializer(data=request.data)
+        if serializer.is_valid():
+            full_name = serializer.validated_data['full_name']
+            stars = serializer.validated_data['stars']
+            comment = serializer.validated_data['comment']
+            obj = FAQ.objects.create(full_name=full_name, stars=stars, comment=comment)
+            obj.save()
+            answer = {
+                'full_name': full_name,
+                'stars': stars,
+                'comment': comment,
+            }
+            return Response(answer, status=status.HTTP_200_OK)
