@@ -2,11 +2,10 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from .logics import translate_text, detect_text, text_docx
 from rest_framework import status
-from .serializers import TranslateSerializer, DocumentSerializer, StarsSerializer
+from .serializers import TranslateSerializer, DocumentSerializer, StarsSerializer, FAQ_Serializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Stars
-
+from .models import Stars, FAQ
 
 
 class IndexView(APIView):
@@ -20,7 +19,7 @@ class IndexView(APIView):
         
         if count == 0:
             data = {
-                'stars': surat/1,
+                'level': surat/1,
                 'srars_count': count,
             }
         else:
@@ -154,3 +153,33 @@ class StarsApiView(APIView):
                     'comment': comment
                 }
                 return Response(answer, status=status.HTTP_200_OK)
+
+
+class FAQApiView(APIView):
+    def get(self, request):
+        faqs = FAQ.objects.all()
+        data = []
+        for item in faqs:
+            data.append({
+                'id': item.id,
+                'from_user': item.full_name,
+                'question': item.question,
+                'admin': "admin",
+                'answer': item.answer,
+            })
+        return Response(data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = FAQ_Serializer(data=request.data)
+        if serializer.is_valid():
+            full_name = serializer.validated_data['full_name']
+            question = serializer.validated_data['question']
+            obj = FAQ.objects.create(full_name=full_name, question=question)
+            obj.save()
+            answer = {
+                'full_name': full_name,
+                'question': question,
+            }
+            return Response(answer, status=status.HTTP_200_OK)
+
+

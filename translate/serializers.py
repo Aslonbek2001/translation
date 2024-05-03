@@ -35,3 +35,15 @@ class DocumentSerializer(serializers.Serializer):
 class StarsSerializer(serializers.Serializer):
     stars = serializers.IntegerField(min_value=1, max_value=5, required=True)
     comment = serializers.CharField(max_length=200, required=False)
+
+
+class FAQ_Serializer(serializers.Serializer):
+    full_name = serializers.CharField(max_length=100, required=True)
+    question = serializers.CharField(max_length=500, required=True)
+
+    class Meta:
+        extra_kwargs = {
+            'full_name': {'required': True},
+            'question': {'required': False}
+        }
+
