@@ -130,7 +130,7 @@ class FAQApiView(APIView):
         if serializer.is_valid():
             full_name = serializer.validated_data['full_name']
             question = serializer.validated_data['question']
-            obj = FAQ.objects.create(full_name=full_name, question=question)
+            FAQ.objects.create(full_name=full_name, question=question)
             answer = {
                 'full_name': full_name,
                 'question': question,
@@ -158,11 +158,11 @@ class StarsApiView(APIView):
             full_name = serializer.validated_data['full_name']
             stars = serializer.validated_data['stars']
             comment = serializer.validated_data['comment']
-            obj = Stars.objects.create(full_name=full_name, stars=stars, comment=comment)
-            obj.save()
+            Stars.objects.create(full_name=full_name, stars=stars, comment=comment)
             answer = {
                 'full_name': full_name,
                 'stars': stars,
                 'comment': comment,
             }
+
             return Response(answer, status=status.HTTP_200_OK)
