@@ -33,7 +33,7 @@ class DocumentSerializer(serializers.Serializer):
         }
 
 class StarsSerializer(serializers.Serializer):
-    full_name = serializers.CharField(max_length=30, default="User")
+    full_name = serializers.CharField(max_length=30, default="User", required=False)
     stars = serializers.IntegerField(min_value=1, max_value=5, required=True)
     comment = serializers.CharField(max_length=200, required=False)
 

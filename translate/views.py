@@ -11,7 +11,6 @@ from .models import Stars, FAQ
 class IndexView(APIView):
     def get(self, request):
         count = Stars.objects.all().count()
-            
         stars = Stars.objects.all()
         surat = 0
         for item in stars:
@@ -119,7 +118,7 @@ class FAQApiView(APIView):
         for item in faqs:
             data.append({
                 'id': item.id,
-                'from_user': item.full_name,
+                'full_name': item.full_name,
                 'question': item.question,
                 'admin': "admin",
                 'answer': item.answer,
@@ -132,7 +131,6 @@ class FAQApiView(APIView):
             full_name = serializer.validated_data['full_name']
             question = serializer.validated_data['question']
             obj = FAQ.objects.create(full_name=full_name, question=question)
-            obj.save()
             answer = {
                 'full_name': full_name,
                 'question': question,
