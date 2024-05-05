@@ -145,7 +145,7 @@ class StarsApiView(APIView):
         for item in faqs:
             data.append({
                 'id': item.id,
-                'from_user': item.full_name,
+                'full_name': item.full_name,
                 'star': item.stars,
                 'comment': item.comment,
             })
