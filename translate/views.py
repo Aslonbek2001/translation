@@ -168,3 +168,6 @@ class StarsApiView(APIView):
             }
 
             return Response(answer, status=status.HTTP_200_OK)
+        
+        else:
+            return Response("full_name or stars or comment", status=status.HTTP_400_BAD_REQUEST)
