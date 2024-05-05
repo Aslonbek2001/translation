@@ -136,6 +136,8 @@ class FAQApiView(APIView):
                 'question': question,
             }
             return Response(answer, status=status.HTTP_200_OK)
+        else:
+            return Response("full_name or question", status=status.HTTP_400_BAD_REQUEST)
 
 
 class StarsApiView(APIView):
