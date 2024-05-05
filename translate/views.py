@@ -124,24 +124,26 @@ class DocumentView(APIView):
             return Response(" Xatolik ", status=status.HTTP_400_BAD_REQUEST)
 
 
-class StarsApiView(APIView):
-    def post(self, request):
-        serializer = StarsSerializer(data=request.data)
+# class StarsApiView(APIView):
+#     def post(self, request):
+#         serializer = StarsSerializer(data=request.data)
 
-        if serializer.is_valid():
-            stars = serializer.validated_data['stars']
-            comment = serializer.validated_data['comment']
+#         if serializer.is_valid():
+#             full_name = serializer.validated_data['full_name']
+#             stars = serializer.validated_data['stars']
+#             comment = serializer.validated_data['comment']
 
-            if stars > 5 or stars < 1:
-                message = "Error: 'Stars' is not True"
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                Stars.objects.create(stars=stars, comment=comment)
-                answer = {
-                    'stars': stars,
-                    'comment': comment
-                }
-                return Response(answer, status=status.HTTP_200_OK)
+#             if stars > 5 or stars < 1:
+#                 message = "Error: 'Stars' is not True"
+#                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
+#             else:
+#                 Stars.objects.create(full_name=full_name, stars=stars, comment=comment)
+#                 answer = {
+#                     'full_name': full_name,
+#                     'stars': stars,
+#                     'comment': comment
+#                 }
+#                 return Response(answer, status=status.HTTP_200_OK)
 
 
 class FAQApiView(APIView):
@@ -192,7 +194,7 @@ class StarsApiView(APIView):
             full_name = serializer.validated_data['full_name']
             stars = serializer.validated_data['stars']
             comment = serializer.validated_data['comment']
-            obj = FAQ.objects.create(full_name=full_name, stars=stars, comment=comment)
+            obj = Stars.objects.create(full_name=full_name, stars=stars, comment=comment)
             obj.save()
             answer = {
                 'full_name': full_name,
