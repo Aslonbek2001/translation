@@ -24,9 +24,7 @@ def text_docx(text):
     document.add_paragraph(text)
     main_path = 'media/file.docx'
     document.save(main_path)
-    path = os.path.join(main_path)
-    print(path + ' created')
-    return  path
+    return  main_path
 
 
 
