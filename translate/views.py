@@ -36,31 +36,18 @@ class TranslateView(APIView):
         if serializer.is_valid():
             text = serializer.validated_data['text']
             target_language = serializer.validated_data['target_language']
-            language_old = detect_text(text)
-
-            if language_old == target_language:
+            
+            if target_language == 'kk' or target_language == 'ky' or target_language == 'uz':
                 answer = {
-                        'old_text': text,
-                        'language': target_language,
-                        'translated_text': text
-                    }
+                    'old_text': text,
+                    'language': target_language,
+                    'translated_text': translate_text(text=text, target_language=target_language)
+                }
                 return Response(answer, status=status.HTTP_200_OK)
-
-            if language_old == 'kk' or language_old == 'ky' or language_old == 'uz':
-
-                if target_language == 'kk' or target_language == 'ky' or target_language == 'uz':
-                    answer = {
-                        'old_text': text,
-                        'language': target_language,
-                        'translated_text': translate_text(text=text, target_language=target_language)
-                    }
-                    return Response(answer, status=status.HTTP_200_OK)
-                else:
-                    message = "Error: 'target_language' is not True"
-                    return Response(message, status=status.HTTP_400_BAD_REQUEST)
             else:
-                message = "Error: 'Language' is not True"
+                message = "Error: 'target_language' is not True"
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
         else:
             return Response(" Xatolik ", status=status.HTTP_400_BAD_REQUEST)
     
